@@ -1,0 +1,247 @@
+{
+  "id": "249728",
+  "name": "fileUpload",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7226336",
+      "name": "压缩包",
+      "font_class": "yasuobao",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "13412232",
+      "name": "文件类型 - excel",
+      "font_class": "yunpanlogo-",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "13412233",
+      "name": "文件类型 - ppt",
+      "font_class": "yunpanlogo-1",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "13412234",
+      "name": "文件类型 - word",
+      "font_class": "yunpanlogo-2",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "13412238",
+      "name": "文件类型 - 未识别文件占位图",
+      "font_class": "yunpanlogo-3",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "13412239",
+      "name": "文件类型 - 音乐",
+      "font_class": "yunpanlogo-4",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "13412240",
+      "name": "文件类型 - 网页",
+      "font_class": "yunpanlogo-5",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "13412243",
+      "name": "文件类型 - 文本文档",
+      "font_class": "yunpanlogo-7",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "13412245",
+      "name": "文件类型 - 镜像文件",
+      "font_class": "yunpanlogo-8",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "13412246",
+      "name": "文件类型 - exe执行文件",
+      "font_class": "yunpanlogo-9",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "13412247",
+      "name": "文件类型 - PSD",
+      "font_class": "yunpanlogo-10",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "13412249",
+      "name": "文件类型 - CAD",
+      "font_class": "yunpanlogo-11",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "13412731",
+      "name": "文件类型 - PDF",
+      "font_class": "yunpanlogo-12",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "15821667",
+      "name": "放大镜",
+      "font_class": "fangdajing",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "6844458",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "8361771",
+      "name": "关闭",
+      "font_class": "guanbi1",
+      "unicode": "e6bf",
+      "unicode_decimal": 59071
+    },
+    {
+      "icon_id": "5065476",
+      "name": "删除",
+      "font_class": "shuangsechangyongtubiao-",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "6335475",
+      "name": "删除",
+      "font_class": "shanchu1",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    },
+    {
+      "icon_id": "6501295",
+      "name": "删除",
+      "font_class": "icon--shanchu",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "13908040",
+      "name": "删除",
+      "font_class": "shanchu2",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "6501296",
+      "name": "添加",
+      "font_class": "icon--tianjia",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "10715461",
+      "name": "添加-",
+      "font_class": "tianjia-",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "14472310",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "13412242",
+      "name": "文件类型 - 视频文件",
+      "font_class": "yunpanlogo-6",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "435970",
+      "name": "添加图片",
+      "font_class": "tianjiatupian",
+      "unicode": "e7dd",
+      "unicode_decimal": 59357
+    },
+    {
+      "icon_id": "6049796",
+      "name": "下载",
+      "font_class": "xiazai",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "349950",
+      "name": "清除",
+      "font_class": "qingchu",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "14421",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "99337",
+      "name": "勾",
+      "font_class": "gou",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "102406",
+      "name": "文件",
+      "font_class": "wenjian",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "263969",
+      "name": "文件",
+      "font_class": "wenjian1",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "718389",
+      "name": "上传",
+      "font_class": "shangchuan",
+      "unicode": "e6f7",
+      "unicode_decimal": 59127
+    },
+    {
+      "icon_id": "1258875",
+      "name": "叉",
+      "font_class": "cha",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "1754073",
+      "name": "文件",
+      "font_class": "wenjian2",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    }
+  ]
+}
