@@ -118,6 +118,7 @@
 <script>
 import './font/iconfont.js'
 import './font/iconfont.css'
+import axios from './js/axios.min.js'
 import {
   wpUploadFileTools,
   wpUploadDataValid,
