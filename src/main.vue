@@ -1,93 +1,39 @@
 <template>
-  <div class="wp-upload">
+  <div class="wp-upload" :rel="wpUploadRel">
     <!--总进度条-->
     <div class="wp-upload-sum-progress" :class="{fail: isUploadFail}" v-show="sumProgressStatus.show">
       <div class="wp-upload-sum-progress-inner" :class="{fail: isUploadFail}"
-           :style="{width: sumProgressStatus.width + '%'}"></div>
+           :style="{width: sumProgressStatus.percent + '%'}"></div>
     </div>
     <!--选择文件-->
     <input class="wp-upload-input-select-file" :id="fileInputId" type="file" :multiple='type == "multiple"'
            style="display: none" @change="fileSelectChange"/>
-    <!--文件本体-->
-    <div class="wp-upload-container" v-if="showModel == 'grid'">
-      <div class="wp-upload-list-container">
-        <div class="wp-upload-list-item" v-for="showItem in fileShowArray">
-          <div class="icon-img" :show="showItem.show" :name="showItem.name">
-            <template v-if="showItem.show == 1">
-              <img class="show-img" :src="showItem.showIcon" :alt="showItem.name"/>
-            </template>
-            <template v-else>
-              <svg class="show-icon icon" aria-hidden="true">
-                <use :xlink:href="showItem.showIcon"></use>
-              </svg>
-            </template>
-          </div>
-          <div class="process" v-show="showItem.processStatus.show">
-            <div class="process-inner" :class="{fail : showItem.processStatus.isFail}"
-                 :style="{width : showItem.processStatus.width + '%'}"></div>
-          </div>
-          <div class="menus">
-            <div class="file-name">{{ showItem.name }}</div>
-            <div class="menu-list">
-              <div class="menu-item" v-if="showItem.show==1 || showItem.show==2 || showItem.show==3"
-                   @click="showSource(showItem)">
-                <span class="iconfont icon-fangdajing"></span>
-              </div>
-              <div class="menu-item" @click="deleteFile(showItem.id)" v-show="showItem.fileSource == 0 || enableDelete">
-                <span class="iconfont icon-shanchu1"></span>
-              </div>
-            </div>
-            <div class="status" :class="{success: showItem.status==2,isupload: showItem.status==1}"></div>
-          </div>
-        </div>
-        <div class="wp-upload-button-select-file" @click="selectFile" v-show="selectFileShow && enableSelect">
-          <span class="iconfont icon-icon--tianjia"></span>
-        </div>
-      </div>
-    </div>
-    <div class="wp-upload-container-list" v-if="showModel == 'list'">
-      <div class="wp-upload-button-select-file-list" @click="selectFile" v-show="selectFileShow && enableSelect">
-        <span class="iconfont icon-icon--tianjia"></span><span>添加文件</span>
-      </div>
-      <div class="wp-upload-files-contain-list">
-        <div class="wp-upload-files-contain-list-item" v-for="showItem in fileShowArray">
-          <div class="file-item-base">
-            <div class="icon-img" :show="showItem.show" :name="showItem.name">
-              <template v-if="showItem.show == 1">
-                <img class="show-img" :src="showItem.showIcon" :alt="showItem.name"/>
-              </template>
-              <template v-else>
-                <svg class="show-icon icon" aria-hidden="true">
-                  <use :xlink:href="showItem.showIcon"></use>
-                </svg>
-              </template>
-            </div>
-            <div class="file-info">
-              <div class="file-name">{{ showItem.name }}</div>
-              <div class="file-size">{{ computerSize(showItem.size) }}</div>
-              <div class="process" v-show="showItem.processStatus.show">
-                <div class="process-inner" :class="{fail : showItem.processStatus.isFail}"
-                     :style="{width : showItem.processStatus.width + '%'}"></div>
-              </div>
-            </div>
-
-          </div>
-          <div class="file-item-menu">
-            <div class="menu-list">
-              <div class="menu-item" v-if="showItem.show==1 || showItem.show==2 || showItem.show==3"
-                   @click="showSource(showItem)">
-                <span class="iconfont icon-fangdajing"></span>
-              </div>
-              <div class="menu-item" @click="deleteFile(showItem.id)" v-show="showItem.fileSource == 0 || enableDelete">
-                <span class="iconfont icon-shanchu1"></span>
-              </div>
-            </div>
-            <div class="status" :class="{success: showItem.status==2,isupload: showItem.status==1}"></div>
-          </div>
-
-        </div>
-      </div>
-    </div>
+    <!--表格模式-->
+    <WpUploadGrid v-if="showModel == 'grid'"
+                  @on-show-source="showSource"
+                  @on-delete-file="deleteFile"
+                  @on-select-file="selectFile"
+                  :file-show-array="fileShowArray"
+                  :select-file-show="selectFileShow"
+                  :enable-delete="enableDelete"
+                  :enable-select="enableSelect">
+    </WpUploadGrid>
+    <!--列表模式-->
+    <WpUploadList v-if="showModel == 'list'"
+                  @on-show-source="showSource"
+                  @on-delete-file="deleteFile"
+                  @on-select-file="selectFile"
+                  :file-show-array="fileShowArray"
+                  :select-file-show="selectFileShow"
+                  :enable-delete="enableDelete"
+                  :enable-select="enableSelect">
+    </WpUploadList>
+    <!--自定义模式-->
+    <template v-if="showModel == 'self'">
+      <slot v-bind:fileShowArray="fileShowArray"
+            v-bind:selectFileShow="selectFileShow">
+      </slot>
+    </template>
     <!--浏览窗口-->
     <div class="wp-upload-master" v-show="masterShow">
       <div class="close" @click="closeMaster">
@@ -128,9 +74,12 @@ import {
   wpUploadFileTypeResolving,
   wpUploadFileShowResolving
 } from './js/wptools'
+import WpUploadGrid from "./component/WpUploadGrid";
+import WpUploadList from "./component/WpUploadList";
 
 export default {
   name: "wp-upload",
+  components: {WpUploadList, WpUploadGrid},
   props: {
     /**
      * single 单文件
@@ -150,7 +99,7 @@ export default {
       type: String,
       default: "grid",
       validator: function (value) {
-        return ['grid', 'list'].indexOf(value) !== -1
+        return ['grid', 'list', 'self'].indexOf(value) !== -1
       }
     },
     /**
@@ -213,6 +162,13 @@ export default {
       default: false
     },
     /**
+     * 是否自定义上传
+     */
+    "uploadSelf": {
+      type: Boolean,
+      default: false
+    },
+    /**
      * 自动上传的参数
      */
     "uploadAutoParams": {
@@ -230,19 +186,31 @@ export default {
         return null;
       }
     },
-    // 是否允许上传
+    /**
+     * 是否允许上传
+     */
     "enableSelect": {
       type: Boolean,
       default: true
     },
-    // 是否允许删除
+    /**
+     * 是否允许删除
+     */
     "enableDelete": {
       type: Boolean,
       default: true
+    },
+    /**
+     * 隐藏进度时间
+     */
+    "hideProcessTime": {
+      type: Number,
+      default: 3000
     }
   },
   data: function () {
     return {
+      wpUploadRel: wpUploadFileTools.uuid(),
       fileInputId: wpUploadFileTools.uuid(),
       // 上传文件的概况
       survey: {
@@ -278,7 +246,7 @@ export default {
       // 总进度条是否显示
       sumProgressStatus: {
         show: false,
-        width: 0
+        percent: 0
       },
       // 应用状态，0 可上传，1 正在上传
       wpStatus: 0,
@@ -289,32 +257,12 @@ export default {
       // 需要总进度
       needSummerProcess: true,
       // 在自动上传的数量
-      inAutoUploadCount: 0,
-      // 隐藏进度条的时间
-      hideProcessTime: 5000
+      inAutoUploadCount: 0
     }
   },
   watch: {
     'survey.fileNum'() {
       this.computerSelectFileIsShow();
-    }
-  },
-  computed: {
-    computerSize() {
-      return function (fileByte) {
-        if (null == fileByte) {
-          return;
-        }
-        let fileSizeByte = fileByte;
-        let fileSizeMsg = "";
-        if (fileSizeByte < 1048576) fileSizeMsg = (fileSizeByte / 1024).toFixed(2) + "KB";
-        else if (fileSizeByte == 1048576) fileSizeMsg = "1MB";
-        else if (fileSizeByte > 1048576 && fileSizeByte < 1073741824) fileSizeMsg = (fileSizeByte / (1024 * 1024)).toFixed(2) + "MB";
-        else if (fileSizeByte > 1048576 && fileSizeByte == 1073741824) fileSizeMsg = "1GB";
-        else if (fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024)).toFixed(2) + "GB";
-        else fileSizeMsg = "文件超过1TB";
-        return fileSizeMsg;
-      }
     }
   },
   mounted() {
@@ -353,9 +301,9 @@ export default {
       wpUploadFileTools.disableObjEvent(document, "dragenter");
       wpUploadFileTools.disableObjEvent(document, "dragover");
       let me = this;
-      let selectBtnObj = document.getElementsByClassName("wp-upload-button-select-file")[0];
-      if (selectBtnObj) {
-        selectBtnObj.addEventListener("drop", function (e) {
+      let wpUploadObj = document.querySelector(".wp-upload[rel='"+this.wpUploadRel+"']");
+      if (wpUploadObj) {
+        wpUploadObj.addEventListener("drop", function (e) {
           if (!me.canDrop) {
             e.preventDefault();
             return;
@@ -382,6 +330,7 @@ export default {
       }
       this.addFileShowArrayOfArray(fileShowTempArray);
     },
+
     /**
      * 获取文件输入对象
      * @returns {Element}
@@ -389,6 +338,7 @@ export default {
     getInputObj() {
       return document.getElementById(this.fileInputId);
     },
+
     /**
      * 选择文件
      */
@@ -472,6 +422,7 @@ export default {
         });
       }
     },
+
     /**
      * 检验文件数量
      * @param cacheFileArray，即将要上传的文件缓存
@@ -577,21 +528,23 @@ export default {
     /**
      * 设置总进度条
      */
-    setSumProcess(isShow, width) {
-      width = width < 0 ? 0 : width;
-      width = width > 100 ? 100 : width;
-      this.sumProgressStatus.show = isShow;
-      this.sumProgressStatus.width = width;
+    setSumProcess(isShow, percent) {
+      percent = percent < 0 ? 0 : percent;
+      percent = percent > 100 ? 100 : percent;
+      this.sumProgressStatus.show = percent;
+      this.sumProgressStatus.percent = percent;
     },
     /**
      * 设置总进度条长度
      */
-    setSumProcessWith(width) {
+    setSumProcessWith(total, loaded) {
+      let percent = loaded / total * 100;
+      percent = percent < 0 ? 0 : percent;
+      percent = percent > 100 ? 100 : percent;
       if (this.sumProgressStatus.show) {
-        width = width < 0 ? 0 : width;
-        width = width > 100 ? 100 : width;
-        this.sumProgressStatus.width = width;
+        this.sumProgressStatus.percent = percent;
       }
+      this.$emit("process-listener", total, loaded, percent);
     },
     /**
      * 清理
@@ -635,8 +588,12 @@ export default {
         wpUploadFileAlert.warn(wpUploadFileMessage.isUpload("上传"));
         return;
       }
+      if (this.uploadSelf) {
+        this.$emit("on-upload", this.fileShowArray);
+        return;
+      }
       if (this.survey.uploadNumber <= 0) {
-        // 没有文件可以上擦魂
+        // 没有文件可以上传
         wpUploadFileAlert.error(wpUploadFileMessage.noFileNeedUpload);
         return;
       }
@@ -683,14 +640,14 @@ export default {
         onUploadProgress: function (e) {
           let loaded = e.loaded;
           let total = e.total;
-          let pwidth = loaded / total * 100;
-          me.setSumProcessWith(pwidth);
+          me.setSumProcessWith(total, loaded);
         }
       }
       axios.post(url, formData, config).then(res => {
         this.setUploadResult(200, res.data);
         this.uploadSuccess();
         this.$emit('on-upload-after', this.uploadResult);
+
       }).catch(e => {
         this.setUploadResult(500, e);
         this.uploadFail();
@@ -724,8 +681,12 @@ export default {
       if (!this.uploadAuto) {
         return;
       }
-      // 如果并不存在文件
-      if (null == fileShowItem.file) {
+      // 如果并不存在文件，或者正在上传，或者文件已经上传
+      if (null == fileShowItem.file && fileShowItem.status != 0) {
+        return;
+      }
+      if (this.uploadSelf) {
+        this.$emit("on-upload", fileShowItem);
         return;
       }
       // 地址是否有效可用，如果不是有效可靠，那么不能进行上传
@@ -756,15 +717,14 @@ export default {
         onUploadProgress: function (e) {
           let loaded = e.loaded;
           let total = e.total;
-          let pwidth = loaded / total * 100;
-          fileShowItem.processStatus.width = pwidth;
+          let percent = loaded / total * 100;
+          fileShowItem.processStatus.percent = percent;
         }
       }
       axios.post(this.url, formData, config).then(res => {
         this.deCreInAutoUploadCount();
-
         let uploadResult = {
-          status: 500,
+          status: 200,
           data: res.data,
           file: fileShowItem.file,
           fileId: fileShowItem.id
@@ -809,11 +769,12 @@ export default {
       this.isUploadFail = true;
       this.setSumProcess(true, 100);
       this.setUploadFileStatus(0);
+      this.computerSurvey();
       setTimeout(function () {
         me.setSumProcess(false, 0);
         me.setWpStatus(0);
         me.isUploadFail = false;
-      }, 5000);
+      }, this.hideProcessTime);
     },
     /**
      * 上传成功
@@ -823,41 +784,59 @@ export default {
       this.isUploadFail = false;
       this.setSumProcess(true, 100);
       this.setUploadFileStatus(2);
+      this.computerSurvey();
       setTimeout(function () {
         me.setSumProcess(false, 0);
         me.setWpStatus(0);
-      }, 5000);
+      }, this.hideProcessTime);
+      ;
     },
+
     uploadFailItem(fileId) {
+      if (!wpUploadDataValid.isValid(fileId)) {
+        return;
+      }
       let fileShowItem = this.findFileShowItemById(fileId);
       this.uploadFailItemWp(fileShowItem);
     },
 
     uploadSuccessItem(fileId) {
+      if (!wpUploadDataValid.isValid(fileId)) {
+        return;
+      }
       let fileShowItem = this.findFileShowItemById(fileId);
       this.uploadSuccessItemWp(fileShowItem);
     },
+
     uploadFailItemWp(fileShowItem) {
       fileShowItem.status = 0;
       fileShowItem.processStatus.isFail = true;
       fileShowItem.processStatus.show = true;
-      fileShowItem.processStatus.width = 100;
+      fileShowItem.processStatus.percent = 100;
+      this.computerSurvey();
       setTimeout(function () {
         fileShowItem.processStatus.show = false;
         fileShowItem.processStatus.isFail = false;
-        fileShowItem.processStatus.width = 0;
-      }, 5000);
+        fileShowItem.processStatus.percent = 0;
+      }, this.hideProcessTime);
     },
     uploadSuccessItemWp(fileShowItem) {
       fileShowItem.status = 2;
       fileShowItem.processStatus.isFail = false;
       fileShowItem.processStatus.show = true;
-      fileShowItem.processStatus.width = 100;
+      fileShowItem.processStatus.percent = 100;
+      this.computerSurvey();
       setTimeout(function () {
         fileShowItem.processStatus.show = false;
         fileShowItem.processStatus.isFail = false;
-        fileShowItem.processStatus.width = 0;
-      }, 5000);
+        fileShowItem.processStatus.percent = 0;
+      }, this.hideProcessTime);
+    },
+    /**
+     * 获取文件的数组
+     */
+    getFileShowArray() {
+      return this.fileShowArray;
     },
     /**
      * 根据文件的ID查找文件对象
@@ -875,9 +854,13 @@ export default {
     },
     /**
      * 设置上传文件的状态
-     * @param status
+     * @param status 状态0未上传,失败也会转到0，1正在上传，2已经上传
+     * @param id 文件id
      */
     setUploadFileStatus(status, id = null) {
+      if (!wpUploadDataValid.isValid(status)) {
+        return;
+      }
       this.fileShowArray.forEach(showItem => {
         if (null != id) {
           if (showItem.id == id) {
@@ -885,6 +868,19 @@ export default {
           }
         } else {
           showItem.status = status;
+        }
+      });
+    },
+    /**
+     * 设置文件描述信息，其它信息
+     */
+    setFileShowItemDes(id, fileDes) {
+      if (!wpUploadDataValid.isValid(id)) {
+        return;
+      }
+      this.fileShowArray.forEach(showItem => {
+        if (showItem.id == id) {
+          showItem.fileDes = fileDes;
         }
       });
     },
@@ -929,7 +925,7 @@ export default {
       let uploadNumber = 0;
       // 计算文件综合大小
       this.fileShowArray.forEach(fileShowItem => {
-        if (null != fileShowItem.size) {
+        if (null != fileShowItem.size && fileShowItem.status === 0) {
           fileTotalSizeTemp += parseInt(fileShowItem.size);
           uploadNumber++;
         }
@@ -964,195 +960,6 @@ export default {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
-}
-
-/*文件容器*/
-.wp-upload .wp-upload-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  -ms-flex-line-pack: start;
-  align-content: flex-start;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-}
-
-/*文件列表容器*/
-.wp-upload .wp-upload-list-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-}
-
-/*文件显示区域*/
-.wp-upload .wp-upload-list-container .wp-upload-list-item {
-  width: 100px;
-  height: 100px;
-  border-radius: 5px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  justify-items: center;
-  -ms-flex-line-pack: center;
-  align-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  border: solid thin #DDDDDD;
-  margin: 5px;
-  overflow: hidden;
-  text-align: center;
-}
-
-/*文件显示图片*/
-.wp-upload .wp-upload-list-container .wp-upload-list-item .show-img {
-  height: 105px
-}
-
-/*文件显示图标*/
-.wp-upload .wp-upload-list-container .wp-upload-list-item .show-icon {
-  text-align: center;
-  margin: 0 auto;
-  font-size: 6em;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .process {
-  position: absolute;
-  height: 5px;
-  width: 100px;
-  border-radius: 5px;
-  border: solid thin #DDDDDD;
-  top: 107px;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .process-inner {
-  height: 5px;
-  background-color: #438cff;
-  width: 20%;
-  border-radius: 5px;
-  -webkit-transition: width 300ms;
-  -o-transition: width 300ms;
-  transition: width 300ms;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .process-inner.fail {
-  background-color: #FF6633;
-}
-
-/*文件名字*/
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .file-name {
-  font-size: 10px;
-  text-align: center;
-  color: #FFFFFF;
-  overflow: hidden;
-  margin: 5px;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/*文件菜单*/
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus {
-  position: absolute;
-  height: 100px;
-  width: 100px;
-  background-color: RGBA(0, 0, 0, 0.6);
-  border-radius: 5px;
-  display: none;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .status {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-  background-color: #FF6633;
-  position: absolute;
-  top: 85px;
-  left: 85px;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .status.success {
-  background-color: #00CC66;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .status.isupload {
-  background-color: #FFCC33;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item:hover .menus {
-  display: block;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .menu-list {
-  margin-top: 20px;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .menu-list .menu-item {
-  display: inline-block;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .menu-list .menu-item .iconfont {
-  color: #FFFFFF;
-  font-size: 1.4em;
-  cursor: pointer;
-}
-
-.wp-upload .wp-upload-list-container .wp-upload-list-item .menus .menu-list .menu-item .iconfont:hover {
-  color: #FF6633;
-}
-
-/*文件选择菜单*/
-.wp-upload .wp-upload-button-select-file {
-  width: 100px;
-  height: 100px;
-  border: solid thin #DDDDDD;
-  text-align: center;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 5px;
-  margin: 5px;
-}
-
-/*文件选择菜单图标显示*/
-.wp-upload .wp-upload-button-select-file .iconfont {
-  font-size: 40px;
-  color: #DDDDDD;
-}
-
-.wp-upload .wp-upload-button-select-file:hover {
-  border-color: #438cff;
-}
-
-.wp-upload .wp-upload-button-select-file:hover .iconfont {
-  color: #438cff;
 }
 
 /*遮罩层*/
@@ -1215,7 +1022,7 @@ export default {
   color: #FFFFFF;
 }
 
-/*进度条*/
+/*总进度条*/
 .wp-upload .wp-upload-sum-progress {
   border: solid 1px #DDDDDD;
   width: 100%;
@@ -1240,176 +1047,4 @@ export default {
   background-color: #FF6633;
 }
 
-
-/*列表模式*/
-/*选择文件按钮*/
-.wp-upload .wp-upload-container-list .wp-upload-button-select-file-list {
-  width: 110px;
-  height: 40px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 5px;
-  margin: 5px;
-  background-color: #438cff;
-  color: #FFFFFF;
-  line-height: 40px;
-  font-size: 15px;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-button-select-file-list:hover {
-  background-color: #204C7A;
-}
-
-/*选择文件按钮 图标*/
-.wp-upload .wp-upload-container-list .wp-upload-button-select-file-list .iconfont {
-  margin-right: 5px;
-}
-
-/*文件显示对象*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item {
-  height: 60px;
-  overflow: hidden;
-  border-radius: 5px;
-  margin: 5px 0px;
-  border: solid thin #DDDDDD;
-}
-
-/*文件显示对象-基本信息*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-base {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
-}
-
-/*文件显示对象-菜单*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu {
-  position: relative;
-  height: 60px;
-  background-color: RGBA(0, 0, 0, 0.6);
-  border-radius: 5px;
-  top: -60px;
-  display: none;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item:hover .file-item-menu {
-  display: block;
-}
-
-/*文件显示对象-菜单列表*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .menu-list {
-  width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  height: 60px;
-}
-
-/*文件显示对象-菜单按钮*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .menu-list .menu-item {
-  margin: 0 5px;
-}
-
-/*文件显示对象-菜单图标*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .menu-list .menu-item .iconfont {
-  color: #FFFFFF;
-  font-size: 1.4em;
-  cursor: pointer;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .menu-list .menu-item .iconfont:hover {
-  color: #FF6633;
-}
-
-/*文件显示对象-菜单状态*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .status {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-  background-color: #FF6633;
-  position: relative;
-  top: -15px;
-  left: 100%;
-  margin-left: -15px;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .status.success {
-  background-color: #00CC66;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-item-menu .status.isupload {
-  background-color: #FFCC33;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .icon-img {
-  height: 60px;
-  width: 60px;
-  overflow: hidden;
-  text-align: center;
-}
-
-/*文件显示对象-图标显示*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .icon-img .show-img {
-  height: 60px;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .icon-img .show-icon {
-  text-align: center;
-  margin: 0 auto;
-  font-size: 3.7em;
-}
-
-/*文件显示对象-文件基本信息*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-info {
-  padding: 5px;
-  width: calc(100% - 70px);
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-info .file-name {
-  font-size: 14px;
-  color: #444444;
-  overflow: hidden;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .file-info .file-size {
-  font-size: 12px;
-  color: #666666;
-  margin-top: 10px;
-}
-
-
-/*文件显示对象-进度条*/
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .process {
-  height: 5px;
-  width: 100%;
-  border-radius: 5px;
-  border: solid thin #DDDDDD;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .process-inner {
-  height: 5px;
-  background-color: #438cff;
-  width: 20%;
-  border-radius: 5px;
-  -webkit-transition: width 300ms;
-  -o-transition: width 300ms;
-  transition: width 300ms;
-}
-
-.wp-upload .wp-upload-container-list .wp-upload-files-contain-list .wp-upload-files-contain-list-item .process-inner.fail {
-  background-color: #FF6633;
-}
 </style>

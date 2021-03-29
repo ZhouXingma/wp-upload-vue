@@ -1,12 +1,16 @@
 {
   "name": "wp-upload-vue",
-  "version": "0.0.2",
-  "main": "dist/index.js",
+  "version": "0.0.5",
+  "description": "file upload ",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {}
+  "keywords": [
+    "vue",
+    "upload",
+    "files"
+  ],
+  "author": "woodpoles@163.com",
+  "license": "ISC"
 }

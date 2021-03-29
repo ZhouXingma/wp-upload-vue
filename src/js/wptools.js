@@ -7,44 +7,44 @@ let wpUploadFileTools = {
      * 获取文件显示模版
      * @param fileItem
      */
-    wapFileItemShow:function(fileItem) {
-        return wpUploadFileTools.wapFileItemShowBase(fileItem,false);
+    wapFileItemShow: function (fileItem) {
+        return wpUploadFileTools.wapFileItemShowBase(fileItem, false);
     },
     /**
      * 包装已上传的文件列表
      */
     wapFileItemShowWithUpload(uploadFile) {
-        return wpUploadFileTools.wapFileItemShowBase(uploadFile,true);
+        return wpUploadFileTools.wapFileItemShowBase(uploadFile, true);
     },
     /**
      * 获取文件显示的基本操作
      */
-    wapFileItemShowBase(fileItem,isUploaded = false) {
+    wapFileItemShowBase(fileItem, isUploaded = false) {
         let fileName = "";
         let suffix = "";
         let show = "";
         let showIcon = "";
-        if(!isUploaded) {
+        if (!isUploaded) {
             fileName = fileItem.name;
             suffix = wpUploadFileTools.getSuffixNameByFileName(fileName);
             show = wpUploadFileTools.resolvingShow(fileItem);
-            showIcon = wpUploadFileShowResolving.getFileItemShowIcon(show,fileItem,false);
+            showIcon = wpUploadFileShowResolving.getFileItemShowIcon(show, fileItem, false);
         } else {
             fileName = fileItem.name ? fileItem.name : wpUploadFileTools.resolvingUrlFileName(fileItem.url);
             let fileNameGetOFuRL = wpUploadFileTools.resolvingUrlFileName(fileItem.url);
             suffix = wpUploadFileTools.getSuffixNameByFileName(fileNameGetOFuRL);
             show = wpUploadFileTools.resolvingShowByFileName(fileNameGetOFuRL);
-            showIcon = wpUploadFileShowResolving.getFileItemShowIcon(show,fileItem.url,true);
+            showIcon = wpUploadFileShowResolving.getFileItemShowIcon(show, fileItem.url, true);
         }
         let fileItemShow = {
             // 文件的id
             id: wpUploadFileTools.uuid(),
             // 文件对象
-            file:null,
+            file: null,
             // 文件的类型
-            type:null,
+            type: null,
             // 文件的大小
-            size:null,
+            size: null,
             // 文件的名字
             name: fileName,
             // 文件地址
@@ -58,17 +58,17 @@ let wpUploadFileTools = {
             // 显示进度条
             processStatus: {
                 show: false,
-                width: 0,
+                percent: 0,
                 isFail: false
             },
             // 文件来源，0选择文件上传，1回显文件
-            fileSource:0,
+            fileSource: 0,
             // 状态0未上传,失败也会转到0，1正在上传，2已经上传
             status: 0,
             // 上传文件的描述
             fileDes: null
         }
-        if(!isUploaded) {
+        if (!isUploaded) {
             // 如果非选择文件下面三个属性为null
             fileItemShow.file = fileItem;
             fileItemShow.type = fileItem.type;
@@ -85,63 +85,63 @@ let wpUploadFileTools = {
     /**
      * 解析URL的文件名字
      */
-    resolvingUrlFileName:function (fileUrl) {
+    resolvingUrlFileName: function (fileUrl) {
         let index = fileUrl.lastIndexOf("/");
-        if(index<=0){
+        if (index <= 0) {
             index = fileUrl.lastIndexOf("\\");
         }
-        index = index+1;
-        let fileName = fileUrl.substring(index,fileUrl.length);
+        index = index + 1;
+        let fileName = fileUrl.substring(index, fileUrl.length);
         return fileName;
     },
     /**
      * 获取文件名后缀
      * @param fileName 文件名全名
      * */
-    getSuffixNameByFileName:function(fileName){
+    getSuffixNameByFileName: function (fileName) {
         let str = fileName;
         let index = str.lastIndexOf(".");
         if (index < 0) {
             return "";
         }
-        let pos = index+1;
-        return str.substring(pos,str.length);
+        let pos = index + 1;
+        return str.substring(pos, str.length);
     },
     /**
      * 解析显示类型
      * @param fileItem 文件
      * @returns {number}
      */
-    resolvingShow:function (fileItem) {
+    resolvingShow: function (fileItem) {
         // 默认0普通文件
         let showResult = 0;
-        if(wpUploadFileTypeResolving.isImg(fileItem)) {
+        if (wpUploadFileTypeResolving.isImg(fileItem)) {
             showResult = 1;
-        } else if(wpUploadFileTypeResolving.isVideo(fileItem)) {
+        } else if (wpUploadFileTypeResolving.isVideo(fileItem)) {
             showResult = 2;
-        } else if(wpUploadFileTypeResolving.isAudio(fileItem)) {
+        } else if (wpUploadFileTypeResolving.isAudio(fileItem)) {
             showResult = 3;
-        } else if(wpUploadFileTypeResolving.isDoc(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isDoc(fileItem.name)) {
             showResult = 4;
-        } else if(wpUploadFileTypeResolving.isExcel(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isExcel(fileItem.name)) {
             showResult = 5;
-        } else if(wpUploadFileTypeResolving.isPPT(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isPPT(fileItem.name)) {
             showResult = 6;
-        } else if(wpUploadFileTypeResolving.isPdf(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isPdf(fileItem.name)) {
             showResult = 7;
-        } else if(wpUploadFileTypeResolving.isZip(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isZip(fileItem.name)) {
             showResult = 8;
-        } else if(wpUploadFileTypeResolving.isWeb(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isWeb(fileItem.name)) {
             showResult = 9;
-        } else if(wpUploadFileTypeResolving.isTxt(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isTxt(fileItem.name)) {
             showResult = 10;
-        } else if(wpUploadFileTypeResolving.isPsd(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isPsd(fileItem.name)) {
             showResult = 11;
-        } else if(wpUploadFileTypeResolving.isCad(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isCad(fileItem.name)) {
             showResult = 12;
-        } else if(wpUploadFileTypeResolving.isIso(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isIso(fileItem.name)) {
             showResult = 13;
-        } else if(wpUploadFileTypeResolving.isExe(fileItem.name)) {
+        } else if (wpUploadFileTypeResolving.isExe(fileItem.name)) {
             showResult = 14;
         }
         return showResult
@@ -152,36 +152,36 @@ let wpUploadFileTools = {
      * @param fileItem 文件
      * @returns {number}
      */
-    resolvingShowByFileName:function (fileItemName) {
+    resolvingShowByFileName: function (fileItemName) {
         // 默认0普通文件
         let showResult = 0;
-        if(wpUploadFileTypeResolving.isImgByName(fileItemName)) {
+        if (wpUploadFileTypeResolving.isImgByName(fileItemName)) {
             showResult = 1;
-        } else if(wpUploadFileTypeResolving.isVideoByName(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isVideoByName(fileItemName)) {
             showResult = 2;
-        } else if(wpUploadFileTypeResolving.isAudioByName(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isAudioByName(fileItemName)) {
             showResult = 3;
-        } else if(wpUploadFileTypeResolving.isDoc(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isDoc(fileItemName)) {
             showResult = 4;
-        } else if(wpUploadFileTypeResolving.isExcel(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isExcel(fileItemName)) {
             showResult = 5;
-        } else if(wpUploadFileTypeResolving.isPPT(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isPPT(fileItemName)) {
             showResult = 6;
-        } else if(wpUploadFileTypeResolving.isPdf(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isPdf(fileItemName)) {
             showResult = 7;
-        } else if(wpUploadFileTypeResolving.isZip(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isZip(fileItemName)) {
             showResult = 8;
-        } else if(wpUploadFileTypeResolving.isWeb(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isWeb(fileItemName)) {
             showResult = 9;
-        } else if(wpUploadFileTypeResolving.isTxt(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isTxt(fileItemName)) {
             showResult = 10;
-        } else if(wpUploadFileTypeResolving.isPsd(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isPsd(fileItemName)) {
             showResult = 11;
-        } else if(wpUploadFileTypeResolving.isCad(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isCad(fileItemName)) {
             showResult = 12;
-        } else if(wpUploadFileTypeResolving.isIso(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isIso(fileItemName)) {
             showResult = 13;
-        } else if(wpUploadFileTypeResolving.isExe(fileItemName)) {
+        } else if (wpUploadFileTypeResolving.isExe(fileItemName)) {
             showResult = 14;
         }
         return showResult
@@ -190,9 +190,9 @@ let wpUploadFileTools = {
      * 生成UUID
      * @returns {string}
      */
-    uuid:function () {
+    uuid: function () {
         let str = wpUploadFileTools.uuidFull();
-        str = str.replace(/-/g,"");
+        str = str.replace(/-/g, "");
         return str;
     },
     uuidFull() {
@@ -210,8 +210,8 @@ let wpUploadFileTools = {
     /**
      * 禁止某个dom的某个事件
      */
-    disableObjEvent(domObj,eventName) {
-        domObj.addEventListener(eventName,function (e) {
+    disableObjEvent(domObj, eventName) {
+        domObj.addEventListener(eventName, function (e) {
             e.preventDefault();
         })
     }
@@ -268,7 +268,7 @@ let wpUploadDataTools = {
         }
         return dataObj;
     },
-    dateFormat (fmt, date) {
+    dateFormat(fmt, date) {
         if (!fmt || !date) {
             return date;
         }
@@ -285,8 +285,10 @@ let wpUploadDataTools = {
             let ret = new RegExp("(" + k + ")").exec(fmt);
             if (ret) {
                 fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-            };
-        };
+            }
+            ;
+        }
+        ;
         return fmt;
     }
 }
@@ -295,25 +297,25 @@ let wpUploadDataTools = {
  * @type {{isValid: wpUploadDataValid.isValid}}
  */
 let wpUploadDataValid = {
-    isValid:function (obj) {
-        if(undefined === obj || null === obj) {
+    isValid: function (obj) {
+        if (undefined === obj || null === obj) {
             return false;
         }
         return true;
     },
-    isValidStr:function(str) {
+    isValidStr: function (str) {
         let isValidObj = wpUploadDataValid.isValid(str);
-        if(!isValidObj) {
+        if (!isValidObj) {
             return isValidObj;
         }
         str = str.trim();
-        if("" == str || '' == str) {
+        if ("" == str || '' == str) {
             return false;
         }
         return true;
     },
     isValidArray(array) {
-        if(null == array || array == undefined || array.length <= 0) {
+        if (null == array || array == undefined || array.length <= 0) {
             return false;
         }
         return true;
@@ -327,103 +329,103 @@ let wpUploadFileTypeResolving = {
     /**
      * 是否是一张图片
      */
-    isImg:function (fileItem) {
-        return wpUploadFileTypeResolving.resolvingByType(fileItem.type,/image\/(\w)*/)
+    isImg: function (fileItem) {
+        return wpUploadFileTypeResolving.resolvingByType(fileItem.type, /image\/(\w)*/)
     },
     /**
      * 通过后缀验证图片
      */
-    isImgByName:function (fileItemName) {
-        let checkSuffixArray = ['jpg','png','jpeg','bmp','gif','webp','tif','svg','wmf'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray)
+    isImgByName: function (fileItemName) {
+        let checkSuffixArray = ['jpg', 'png', 'jpeg', 'bmp', 'gif', 'webp', 'tif', 'svg', 'wmf'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray)
     },
     /**
      * 是否是视频
      */
-    isVideo:function (fileItem) {
-        return wpUploadFileTypeResolving.resolvingByType(fileItem.type,/video\/(\w)*/)
+    isVideo: function (fileItem) {
+        return wpUploadFileTypeResolving.resolvingByType(fileItem.type, /video\/(\w)*/)
     },
     /**
      * 通过后缀验证图片
      */
-    isVideoByName:function (fileItemName) {
-        let checkSuffixArray = ['mp4','Ogg','webm'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray)
+    isVideoByName: function (fileItemName) {
+        let checkSuffixArray = ['mp4', 'Ogg', 'webm'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray)
     },
     /**
      * 是否是音频
      */
-    isAudio:function (fileItem) {
-        return wpUploadFileTypeResolving.resolvingByType(fileItem.type,/audio\/(\w)*/)
+    isAudio: function (fileItem) {
+        return wpUploadFileTypeResolving.resolvingByType(fileItem.type, /audio\/(\w)*/)
     },
     /**
      * 通过后缀验证图片
      */
-    isAudioByName:function (fileItemName) {
-        let checkSuffixArray = ['mp3','ogg','wav'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray)
+    isAudioByName: function (fileItemName) {
+        let checkSuffixArray = ['mp3', 'ogg', 'wav'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray)
     },
 
     /**
      * 是否是doc文件
      */
-    isDoc:function (fileItemName) {
-        let checkSuffixArray = ['doc','docx','dot','dotx'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+    isDoc: function (fileItemName) {
+        let checkSuffixArray = ['doc', 'docx', 'dot', 'dotx'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
     /**
      * 是否是excel文件
      */
-    isExcel:function (fileItemName) {
-        let checkSuffixArray = ['xls','xlsx','csv','xlt','xltx'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+    isExcel: function (fileItemName) {
+        let checkSuffixArray = ['xls', 'xlsx', 'csv', 'xlt', 'xltx'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
     /**
      * 是否是PPT文件
      */
-    isPPT:function (fileItemName) {
-        let checkSuffixArray = ['ppt','pptx','pot','potx','odp'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+    isPPT: function (fileItemName) {
+        let checkSuffixArray = ['ppt', 'pptx', 'pot', 'potx', 'odp'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
     /**
      * 是否是Pdf文件
      */
-    isPdf:function (fileItemName) {
+    isPdf: function (fileItemName) {
         let checkSuffixArray = ['pdf'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
     /**
      * 是否是压缩文件
      * @param fileItem
      * @returns {boolean}
      */
-    isZip:function (fileItemName) {
-        let checkSuffixArray = ['zip','7z','war','tar','rar','jar','zipx','zix','zoo'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+    isZip: function (fileItemName) {
+        let checkSuffixArray = ['zip', '7z', 'war', 'tar', 'rar', 'jar', 'zipx', 'zix', 'zoo'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
-    isWeb:function (fileItemName) {
-        let checkSuffixArray = ['html','htm'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+    isWeb: function (fileItemName) {
+        let checkSuffixArray = ['html', 'htm'];
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
-    isTxt:function (fileItemName) {
+    isTxt: function (fileItemName) {
         let checkSuffixArray = ['txt'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
-    isPsd:function (fileItemName) {
+    isPsd: function (fileItemName) {
         let checkSuffixArray = ['psd'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
-    isCad:function (fileItemName) {
+    isCad: function (fileItemName) {
         let checkSuffixArray = ['cad'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
-    isIso:function (fileItemName) {
+    isIso: function (fileItemName) {
         let checkSuffixArray = ['iso'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
-    isExe:function (fileItemName) {
+    isExe: function (fileItemName) {
         let checkSuffixArray = ['exe'];
-        return wpUploadFileTypeResolving.resolvingByName(fileItemName,checkSuffixArray);
+        return wpUploadFileTypeResolving.resolvingByName(fileItemName, checkSuffixArray);
     },
     /**
      * 根据文件类型来解析
@@ -431,7 +433,7 @@ let wpUploadFileTypeResolving = {
      * @param checkTypeModel 文件类型模型，如：image\/(\w)*
      * @returns {boolean}
      */
-    resolvingByType:function(fileType,checkTypeModel) {
+    resolvingByType: function (fileType, checkTypeModel) {
         if (checkTypeModel.test(fileType)) {
             return true;
         }
@@ -442,16 +444,16 @@ let wpUploadFileTypeResolving = {
      * @param fileName 文件名
      * @param checkSuffixArray 文件类型包含的后缀
      */
-    resolvingByName:function (fileName,checkSuffixArray) {
+    resolvingByName: function (fileName, checkSuffixArray) {
         let suffixName = wpUploadFileTools.getSuffixNameByFileName(fileName);
         // 名字是否有效
-        if(!wpUploadDataValid.isValidStr(suffixName)) {
+        if (!wpUploadDataValid.isValidStr(suffixName)) {
             // 无效直接返回false
             return false;
         }
         suffixName = suffixName.trim();
         suffixName = suffixName.toLowerCase();
-        if(checkSuffixArray.indexOf(suffixName) != -1) {
+        if (checkSuffixArray.indexOf(suffixName) != -1) {
             return true;
         }
         return false;
@@ -469,40 +471,71 @@ let wpUploadFileShowResolving = {
      * @param fileItem
      * @returns {string}
      */
-    getFileItemShowIcon:function(show,fileItem,isUrl = false) {
+    getFileItemShowIcon: function (show, fileItem, isUrl = false) {
         let showIcon = '';
         switch (show) {
-            case 0: showIcon = "#icon-yunpanlogo-3";break;
+            case 0:
+                showIcon = "#icon-yunpanlogo-3";
+                break;
             // 图片
-            case 1: showIcon = wpUploadFileShowResolving.getImgShowIcon(fileItem,isUrl); break;
+            case 1:
+                showIcon = wpUploadFileShowResolving.getImgShowIcon(fileItem, isUrl);
+                break;
             // 视频
-            case 2: showIcon = "#icon-yunpanlogo-6"; break;
+            case 2:
+                showIcon = "#icon-yunpanlogo-6";
+                break;
             // 音乐
-            case 3: showIcon = "#icon-yunpanlogo-4"; break;
+            case 3:
+                showIcon = "#icon-yunpanlogo-4";
+                break;
             // doc
-            case 4: showIcon = "#icon-yunpanlogo-2"; break;
+            case 4:
+                showIcon = "#icon-yunpanlogo-2";
+                break;
             // excel
-            case 5: showIcon = "#icon-yunpanlogo-"; break;
+            case 5:
+                showIcon = "#icon-yunpanlogo-";
+                break;
             // ppt
-            case 6: showIcon = "#icon-yunpanlogo-1"; break;
+            case 6:
+                showIcon = "#icon-yunpanlogo-1";
+                break;
             // pdf
-            case 7: showIcon = "#icon-yunpanlogo-12"; break;
+            case 7:
+                showIcon = "#icon-yunpanlogo-12";
+                break;
             // zip
-            case 8: showIcon = "#icon-yasuobao"; break;
+            case 8:
+                showIcon = "#icon-yasuobao";
+                break;
             // web文件
-            case 9: showIcon = "#icon-yunpanlogo-5"; break;
+            case 9:
+                showIcon = "#icon-yunpanlogo-5";
+                break;
             // txt文件
-            case 10: showIcon = "#icon-yunpanlogo-7"; break;
+            case 10:
+                showIcon = "#icon-yunpanlogo-7";
+                break;
             // PSD
-            case 11: showIcon = "#icon-yunpanlogo-10"; break;
+            case 11:
+                showIcon = "#icon-yunpanlogo-10";
+                break;
             // cad
-            case 12: showIcon = "#icon-yunpanlogo-11"; break;
+            case 12:
+                showIcon = "#icon-yunpanlogo-11";
+                break;
             // ISO
-            case 13: showIcon = "#icon-yunpanlogo-8"; break;
+            case 13:
+                showIcon = "#icon-yunpanlogo-8";
+                break;
             // 可执行
-            case 14: showIcon = "#icon-yunpanlogo-9"; break;
+            case 14:
+                showIcon = "#icon-yunpanlogo-9";
+                break;
             // 普通文件
-            default: showIcon = "#icon-yunpanlogo-3";
+            default:
+                showIcon = "#icon-yunpanlogo-3";
         }
         return showIcon;
     },
@@ -512,9 +545,9 @@ let wpUploadFileShowResolving = {
      * @param isUrl
      * @returns {string|*}
      */
-    getImgShowIcon(fileItem,isUrl) {
+    getImgShowIcon(fileItem, isUrl) {
         // 如果不是url
-        if(!isUrl) {
+        if (!isUrl) {
             return wpUploadFileShowResolving.getImgUrlOfLocal(fileItem);
         }
         // 如果是url
@@ -524,7 +557,7 @@ let wpUploadFileShowResolving = {
      * 获取图片文件的本地路径
      * @param fileItem 文件对象
      */
-    getImgUrlOfLocal:function(fileItem){
+    getImgUrlOfLocal: function (fileItem) {
         // 获取文件路径
         let imgUrlStr = "";
         if (window.createObjectURL !== undefined) { //  basic
@@ -546,21 +579,21 @@ let wpUploadFileAlert = {
      * 错误提示
      * @param message 提示信息
      */
-    "error" : function (message) {
+    "error": function (message) {
         console.error(message)
     },
     /**
      * 普通信息提示
      * @param message 提示信息
      */
-    "info" : function(message) {
+    "info": function (message) {
         console.info(message);
     },
     /**
      * 警告提醒
      * @param message 提示信息
      */
-    "warn" : function (message) {
+    "warn": function (message) {
         console.warn(message);
     }
 }
@@ -575,26 +608,26 @@ let wpUploadFileMessage = {
      * @return {string} 返回信息内容
      */
     outMaxFileNumber(maxFileNumber) {
-        return "文件数量错误：最多只能上传"+maxFileNumber+"个文件"
+        return "文件数量错误：最多只能上传" + maxFileNumber + "个文件"
     },
     /**
      * 没有文件可以上传
      */
-    noFileNeedUpload:"没有文件可以上传",
+    noFileNeedUpload: "没有文件可以上传",
     /**
      * 上传地址无效
      */
-    uploadUrlError:"上传地址无效",
+    uploadUrlError: "上传地址无效",
     /**
      * 上传失败
      */
-    uploadFail:"上传失败",
+    uploadFail: "上传失败",
     /**
      * 正在上传无法执行的操作
      * @param takename 操作名称
      */
-    isUpload(takeName){
-        return "正在上传，无法执行【"+takeName+"】操作";
+    isUpload(takeName) {
+        return "正在上传，无法执行【" + takeName + "】操作";
     },
     /**
      * 采用了自动上传
@@ -602,7 +635,7 @@ let wpUploadFileMessage = {
      * @returns {string}
      */
     isUploadAuto(takeName) {
-        return "采用了自动上传，不能进行【"+takeName+"】操作"
+        return "采用了自动上传，不能进行【" + takeName + "】操作"
     }
 }
 
